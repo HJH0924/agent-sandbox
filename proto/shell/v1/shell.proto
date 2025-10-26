@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package shell.v1;
+
+service ShellService {
+  rpc Execute(ExecuteRequest) returns (ExecuteResponse);
+}
+
+message ExecuteRequest {
+  string command = 1;
+}
+
+message ExecuteResponse {
+  string output = 1;
+}

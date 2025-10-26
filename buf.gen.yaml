@@ -1,0 +1,16 @@
+version: v2
+
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/HJH0924/agent-sandbox/sdk/go
+
+plugins:
+  ## go sdk
+  - local: protoc-gen-go
+    out: sdk/go
+    opt: paths=source_relative
+  - local: protoc-gen-connect-go
+    out: sdk/go
+    opt: paths=source_relative

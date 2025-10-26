@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package file.v1;
+
+service FileService {
+  rpc Read(ReadRequest) returns (ReadResponse);
+  rpc Write(WriteRequest) returns (WriteResponse);
+  rpc Edit(EditRequest) returns (EditResponse);
+}
+
+message ReadRequest {
+  string path = 1;
+}
+
+message ReadResponse {
+  string content = 1;
+}
+
+message WriteRequest {
+  string path = 1;
+  string content = 2;
+}
+
+message WriteResponse {}
+
+message EditRequest {
+  string path = 1;
+  string content = 2;
+}
+
+message EditResponse {
+  string path = 1;
+  string content = 2;
+}
