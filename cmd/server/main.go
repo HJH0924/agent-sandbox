@@ -10,7 +10,6 @@ import (
 	"syscall"
 	"time"
 
-	"connectrpc.com/connect"
 	"github.com/HJH0924/agent-sandbox/internal/config"
 	"github.com/HJH0924/agent-sandbox/internal/domain/core"
 	coreService "github.com/HJH0924/agent-sandbox/internal/domain/core/service"
@@ -22,6 +21,8 @@ import (
 	corev1connect "github.com/HJH0924/agent-sandbox/sdk/go/core/v1/corev1connect"
 	filev1connect "github.com/HJH0924/agent-sandbox/sdk/go/file/v1/filev1connect"
 	shellv1connect "github.com/HJH0924/agent-sandbox/sdk/go/shell/v1/shellv1connect"
+
+	"connectrpc.com/connect"
 	"github.com/spf13/cobra"
 )
 
@@ -32,8 +33,8 @@ const (
 var (
 	configFile string
 	rootCmd    = &cobra.Command{
-		Use:     "agent-sandbox",
-		Short:   "Agent Sandbox Server",
+		Use:     "api-server",
+		Short:   "Agent Sandbox API Server",
 		Long:    "A sandbox service for Agent to execute shell commands and file operations",
 		Run:     run,
 		Version: Version,
@@ -68,7 +69,7 @@ func run(cmd *cobra.Command, args []string) {
 		slog.String("config", configFile))
 
 	// 确保工作目录存在
-	if err := os.MkdirAll(cfg.Sandbox.WorkspaceDir, 0755); err != nil {
+	if err := os.MkdirAll(cfg.Sandbox.WorkspaceDir, 0o755); err != nil {
 		logger.Error("failed to create workspace directory",
 			slog.String("dir", cfg.Sandbox.WorkspaceDir),
 			slog.Any("error", err))
@@ -115,7 +116,9 @@ func run(cmd *cobra.Command, args []string) {
 	// 健康检查
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		if _, err := w.Write([]byte("OK")); err != nil {
+			logger.Error("failed to write health check response", slog.Any("error", err))
+		}
 	})
 
 	// 创建 HTTP 服务器

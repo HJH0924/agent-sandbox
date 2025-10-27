@@ -1,36 +1,14 @@
-version: '3.8'
-
 services:
   agent-sandbox:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: agent-sandbox
+      dockerfile: e2b.Dockerfile
+    command: /app/bin/api-server -c /app/configs/config.yaml
     ports:
       - "8080:8080"
-    volumes:
-      # Mount workspace directory
-      - sandbox-workspace:/tmp/agent-sandbox
-      # Mount config file (optional, can override default config)
-      - ./configs/config.yaml:/app/configs/config.yaml:ro
-    environment:
-      # Override config via environment variables if needed
-      - LOG_LEVEL=info
-      - LOG_FORMAT=json
-    restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 5s
-    networks:
-      - agent-sandbox-network
-
-volumes:
-  sandbox-workspace:
-    driver: local
-
-networks:
-  agent-sandbox-network:
-    driver: bridge

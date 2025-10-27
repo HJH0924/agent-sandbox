@@ -5,15 +5,19 @@ import (
 	"log/slog"
 	"strings"
 
-	"connectrpc.com/connect"
 	"github.com/HJH0924/agent-sandbox/internal/domain/core/service"
+
+	"connectrpc.com/connect"
 )
+
+// contextKey 自定义上下文键类型
+type contextKey string
 
 const (
 	// APIKeyHeader API Key 请求头
 	APIKeyHeader = "X-Sandbox-Api-Key"
 	// SandboxIDKey 上下文中的 Sandbox ID key
-	SandboxIDKey = "sandbox_id"
+	SandboxIDKey contextKey = "sandbox_id"
 )
 
 // AuthInterceptor 认证拦截器

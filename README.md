@@ -1,71 +1,47 @@
 # Agent Sandbox Service
 
-[English](#english) | [中文](#中文)
+一个为 AI Agent 设计的安全沙箱服务，提供隔离的文件操作和命令执行环境。基于 Go 和 gRPC/Connect-RPC 构建。
 
-## English
+## 特性
 
-### Overview
+- **安全沙箱环境**：每个沙箱实例拥有独立的工作空间
+- **API Key 认证**：使用 X-Sandbox-Api-Key 进行安全访问控制
+- **文件操作**：支持文件读取、写入和编辑
+- **Shell 命令执行**：支持超时控制的命令执行
+- **结构化日志**：使用 slog 进行 JSON 格式日志记录
+- **云端部署**：支持 E2B 和 Docker 部署
 
-Agent Sandbox is a secure sandbox service designed for AI Agents to safely execute shell commands and perform file operations. Built with Go and gRPC/Connect-RPC, it provides isolated environments with fine-grained access control.
+## 快速开始
 
-### Features
+### 前置要求
 
-- **Secure Sandbox Environment**: Isolated workspace for each sandbox instance
-- **API Key Authentication**: Secure access control using X-SANDBOX-API-KEY header
-- **File Operations**: Read, write, and edit files within the sandbox
-- **Shell Command Execution**: Execute shell commands with timeout control
-- **JSON Logging**: Structured logging using slog
-- **Health Checks**: Built-in health check endpoint
-- **Docker Support**: Easy deployment with Docker and Docker Compose
+- Go 1.24+
+- Make
+- Docker（可选，用于容器部署）
 
-### Architecture
-
-- **Core Service**: Initialize sandbox and generate API keys
-- **File Service**: File read/write/edit operations
-- **Shell Service**: Execute shell commands with timeout
-- **Middleware**: API key authentication interceptor
-
-### Quick Start
-
-#### Prerequisites
-
-- Go 1.23+
-- Protocol Buffers compiler (for development)
-- Docker and Docker Compose (for deployment)
-
-#### Local Development
+### 本地开发
 
 ```bash
-# Clone the repository
+# 克隆仓库
 git clone https://github.com/HJH0924/agent-sandbox.git
 cd agent-sandbox
 
-# Install dependencies
-go mod download
+# 安装开发依赖（推荐）
+make install-deps
 
-# Build the project
+# 安装 Go 模块依赖
+go mod tidy
+
+# 构建并运行
 make build
-
-# Run the server
-./bin/agent-sandbox --config configs/config.yaml
+./bin/api-server --config configs/config.yaml
 ```
 
-#### Docker Deployment
+服务将在 `http://localhost:8080` 启动。
 
-```bash
-# Build and start with Docker Compose
-docker-compose up -d
+## 基本使用
 
-# Check service status
-docker-compose ps
-
-# View logs
-docker-compose logs -f agent-sandbox
-```
-
-### API Usage
-
-#### 1. Initialize Sandbox
+### 1. 初始化沙箱
 
 ```bash
 curl -X POST http://localhost:8080/core.v1.CoreService/InitSandbox \
@@ -73,7 +49,7 @@ curl -X POST http://localhost:8080/core.v1.CoreService/InitSandbox \
   -d '{}'
 ```
 
-Response:
+响应示例：
 ```json
 {
   "sandboxId": "550e8400-e29b-41d4-a716-446655440000",
@@ -82,25 +58,7 @@ Response:
 }
 ```
 
-#### 2. File Operations
-
-**Read File:**
-```bash
-curl -X POST http://localhost:8080/file.v1.FileService/Read \
-  -H "Content-Type: application/json" \
-  -H "X-Sandbox-Api-Key: sk_your_api_key" \
-  -d '{"path": "example.txt"}'
-```
-
-**Write File:**
-```bash
-curl -X POST http://localhost:8080/file.v1.FileService/Write \
-  -H "Content-Type: application/json" \
-  -H "X-Sandbox-Api-Key: sk_your_api_key" \
-  -d '{"path": "example.txt", "content": "Hello, World!"}'
-```
-
-#### 3. Execute Shell Command
+### 2. 执行命令
 
 ```bash
 curl -X POST http://localhost:8080/shell.v1.ShellService/Execute \
@@ -109,159 +67,7 @@ curl -X POST http://localhost:8080/shell.v1.ShellService/Execute \
   -d '{"command": "ls -la"}'
 ```
 
-### Configuration
-
-Edit `configs/config.yaml`:
-
-```yaml
-server:
-  host: "0.0.0.0"
-  port: 8080
-  read_timeout: 30s
-  write_timeout: 30s
-
-sandbox:
-  workspace_dir: "/tmp/agent-sandbox"
-  max_file_size: 104857600  # 100MB
-  shell_timeout: 300        # 5 minutes
-
-log:
-  level: "info"  # debug, info, warn, error
-  format: "json" # json, text
-```
-
-### Development
-
-See [Development Guide](docs/development.md) for detailed development instructions.
-
-```bash
-# Generate proto code
-make generate
-
-# Run tests
-make test
-
-# Run linter
-make lint
-
-# Format code
-make format
-```
-
-### Project Structure
-
-```
-agent-sandbox/
-├── cmd/
-│   └── server/           # Main application entry
-├── configs/              # Configuration files
-├── docs/                 # Documentation
-├── internal/
-│   ├── config/          # Configuration management
-│   ├── domain/          # Business domains
-│   │   ├── core/       # Core service
-│   │   ├── file/       # File service
-│   │   └── shell/      # Shell service
-│   └── middleware/      # Middleware (auth, logging)
-├── proto/               # Protocol Buffer definitions
-└── sdk/                 # Generated SDK code
-```
-
-### License
-
-MIT License
-
----
-
-## 中文
-
-### 概述
-
-Agent Sandbox 是一个为 AI Agent 设计的安全沙箱服务，用于安全地执行 shell 命令和文件操作。基于 Go 和 gRPC/Connect-RPC 构建，提供隔离环境和细粒度的访问控制。
-
-### 特性
-
-- **安全的沙箱环境**：每个沙箱实例拥有独立的工作空间
-- **API Key 认证**：使用 X-SANDBOX-API-KEY 请求头进行安全访问控制
-- **文件操作**：在沙箱内读取、写入和编辑文件
-- **Shell 命令执行**：支持超时控制的 shell 命令执行
-- **JSON 日志**：使用 slog 进行结构化日志记录
-- **健康检查**：内置健康检查端点
-- **Docker 支持**：使用 Docker 和 Docker Compose 轻松部署
-
-### 架构
-
-- **Core Service**：初始化沙箱并生成 API 密钥
-- **File Service**：文件读写编辑操作
-- **Shell Service**：执行带超时控制的 shell 命令
-- **Middleware**：API 密钥认证拦截器
-
-### 快速开始
-
-#### 前置要求
-
-- Go 1.23+
-- Protocol Buffers 编译器（开发用）
-- Docker 和 Docker Compose（部署用）
-
-#### 本地开发
-
-```bash
-# 克隆仓库
-git clone https://github.com/HJH0924/agent-sandbox.git
-cd agent-sandbox
-
-# 安装依赖
-go mod download
-
-# 构建项目
-make build
-
-# 运行服务
-./bin/agent-sandbox --config configs/config.yaml
-```
-
-#### Docker 部署
-
-```bash
-# 使用 Docker Compose 构建并启动
-docker-compose up -d
-
-# 检查服务状态
-docker-compose ps
-
-# 查看日志
-docker-compose logs -f agent-sandbox
-```
-
-### API 使用
-
-#### 1. 初始化沙箱
-
-```bash
-curl -X POST http://localhost:8080/core.v1.CoreService/InitSandbox \
-  -H "Content-Type: application/json" \
-  -d '{}'
-```
-
-响应：
-```json
-{
-  "sandboxId": "550e8400-e29b-41d4-a716-446655440000",
-  "apiKey": "sk_0123456789abcdef...",
-  "createdAt": "2024-01-01T00:00:00Z"
-}
-```
-
-#### 2. 文件操作
-
-**读取文件：**
-```bash
-curl -X POST http://localhost:8080/file.v1.FileService/Read \
-  -H "Content-Type: application/json" \
-  -H "X-Sandbox-Api-Key: sk_your_api_key" \
-  -d '{"path": "example.txt"}'
-```
+### 3. 文件操作
 
 **写入文件：**
 ```bash
@@ -271,16 +77,54 @@ curl -X POST http://localhost:8080/file.v1.FileService/Write \
   -d '{"path": "example.txt", "content": "Hello, World!"}'
 ```
 
-#### 3. 执行 Shell 命令
-
+**读取文件：**
 ```bash
-curl -X POST http://localhost:8080/shell.v1.ShellService/Execute \
+curl -X POST http://localhost:8080/file.v1.FileService/Read \
   -H "Content-Type: application/json" \
   -H "X-Sandbox-Api-Key: sk_your_api_key" \
-  -d '{"command": "ls -la"}'
+  -d '{"path": "example.txt"}'
 ```
 
-### 配置
+## 本地测试
+
+### 使用 Docker 模拟 E2B 环境
+
+本地可以使用 Docker 来模拟 E2B sandbox 环境，用于开发和测试：
+
+```bash
+# 启动 Docker 容器（使用与 E2B 相同的 Dockerfile）
+make docker
+
+# 查看日志
+docker-compose logs -f
+
+# 进入容器测试
+make shell
+```
+
+## 生产部署
+
+### E2B Sandbox 部署
+
+**生产环境推荐使用 E2B 云端沙箱**，专为 AI Agent 设计。
+
+```bash
+# 安装 E2B CLI
+npm install -g @e2b/cli
+
+# 设置 API Key（从 https://e2b.dev/dashboard 获取）
+export E2B_API_KEY=your_api_key
+
+# 构建 E2B 模板
+make e2b
+
+# 创建沙箱
+e2b sandbox spawn agent-sandbox
+```
+
+详细的 E2B 使用说明请查看[开发指南](docs/development.md#e2b-模板部署)。
+
+## 配置
 
 编辑 `configs/config.yaml`：
 
@@ -301,43 +145,45 @@ log:
   format: "json" # json, text
 ```
 
-### 开发
+## 开发
 
 查看[开发指南](docs/development.md)了解详细的开发说明。
 
+**常用命令：**
+
 ```bash
-# 生成 proto 代码
-make generate
-
-# 运行测试
-make test
-
-# 运行代码检查
-make lint
-
-# 格式化代码
-make format
+make install-deps      # 安装开发依赖（包含 pre-commit hook）
+make format            # 格式化代码
+make lint              # 运行代码检查
+make build             # 构建项目
+make test              # 运行测试
+make generate          # 生成 proto 代码
+make docker            # 启动 Docker 模拟 E2B 环境（用于测试）
+make e2b               # 构建 E2B 模板（用于生产部署）
+make help              # 查看所有命令
 ```
 
-### 项目结构
+## 项目结构
 
 ```
 agent-sandbox/
-├── cmd/
-│   └── server/           # 主程序入口
+├── cmd/server/           # 主程序入口
 ├── configs/              # 配置文件
 ├── docs/                 # 文档
-├── internal/
+├── internal/             # 私有应用代码
 │   ├── config/          # 配置管理
-│   ├── domain/          # 业务域
-│   │   ├── core/       # 核心服务
-│   │   ├── file/       # 文件服务
-│   │   └── shell/      # Shell服务
+│   ├── domain/          # 业务域（core/file/shell）
 │   └── middleware/      # 中间件（认证、日志）
 ├── proto/               # Protocol Buffer 定义
+├── scripts/             # 构建脚本和工具
 └── sdk/                 # 生成的 SDK 代码
 ```
 
-### 许可证
+## 文档
+
+- [开发指南](docs/development.md) - 详细的开发说明、API 开发、测试和部署
+- [API 文档](docs/api.md) - API 接口详细说明（即将推出）
+
+## 许可证
 
 MIT License

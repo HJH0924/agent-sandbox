@@ -1,8 +1,8 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: "Agent Sandbox",
-  description: "为 AI Agent 提供安全的代码执行和文件操作能力的沙箱服务",
+  title: "Agent Sandbox Service",
+  description: "一个为 AI Agent 设计的安全沙箱服务，提供隔离的文件操作和命令执行环境。基于 Go 和 gRPC/Connect-RPC 构建。",
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
@@ -12,9 +12,8 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: '介绍',
+        text: '指南',
         items: [
-          { text: '快速开始', link: '/index' },
           { text: '开发指南', link: '/development' }
         ]
       },
@@ -34,7 +33,7 @@ export default defineConfig({
 
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024'
+      copyright: 'Copyright © 2025 Kaho'
     }
   }
 })

@@ -1,0 +1,18 @@
+# This is a config for E2B sandbox template.
+# You can use template ID (ldsskym0yetnyo7gbrg6) or template name (agent-sandbox) to create a sandbox:
+
+# Python SDK
+# from e2b import Sandbox, AsyncSandbox
+# sandbox = Sandbox("agent-sandbox") # Sync sandbox
+# sandbox = await AsyncSandbox.create("agent-sandbox") # Async sandbox
+
+# JS SDK
+# import { Sandbox } from 'e2b'
+# const sandbox = await Sandbox.create('agent-sandbox')
+
+memory_mb = 2_048
+cpu_count = 2
+start_cmd = "/app/bin/agent-sandbox -c /app/configs/config.yaml"
+dockerfile = "e2b.Dockerfile"
+template_name = "agent-sandbox"
+template_id = "ldsskym0yetnyo7gbrg6"

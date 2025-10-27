@@ -68,12 +68,12 @@ func (s *Service) Write(path, content string) error {
 
 	// 创建目录
 	dir := filepath.Dir(fullPath)
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("failed to create directories: %w", err)
 	}
 
 	// 写入文件
-	if err := os.WriteFile(fullPath, []byte(content), 0644); err != nil {
+	if err := os.WriteFile(fullPath, []byte(content), 0o644); err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
 
@@ -106,7 +106,7 @@ func (s *Service) Edit(path, content string) (*EditResult, error) {
 	}
 
 	// 写入文件
-	if err := os.WriteFile(fullPath, []byte(content), 0644); err != nil {
+	if err := os.WriteFile(fullPath, []byte(content), 0o644); err != nil {
 		return nil, fmt.Errorf("failed to write file: %w", err)
 	}
 

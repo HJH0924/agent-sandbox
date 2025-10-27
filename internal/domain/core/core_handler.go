@@ -4,9 +4,10 @@ import (
 	"context"
 	"log/slog"
 
-	"connectrpc.com/connect"
-	corev1 "github.com/HJH0924/agent-sandbox/sdk/go/core/v1"
 	"github.com/HJH0924/agent-sandbox/internal/domain/core/service"
+	corev1 "github.com/HJH0924/agent-sandbox/sdk/go/core/v1"
+
+	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
