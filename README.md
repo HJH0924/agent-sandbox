@@ -1,47 +1,47 @@
 # Agent Sandbox Service
 
-一个为 AI Agent 设计的安全沙箱服务，提供隔离的文件操作和命令执行环境。基于 Go 和 gRPC/Connect-RPC 构建。
+A secure sandbox service designed for AI Agents, providing isolated file operations and command execution environment. Built with Go and gRPC/Connect-RPC.
 
-## 特性
+## Features
 
-- **安全沙箱环境**：每个沙箱实例拥有独立的工作空间
-- **API Key 认证**：使用 X-Sandbox-Api-Key 进行安全访问控制
-- **文件操作**：支持文件读取、写入和编辑
-- **Shell 命令执行**：支持超时控制的命令执行
-- **结构化日志**：使用 slog 进行 JSON 格式日志记录
-- **云端部署**：支持 E2B 和 Docker 部署
+- **Secure Sandbox Environment**: Each sandbox instance has its own isolated workspace
+- **API Key Authentication**: Secure access control using X-Sandbox-Api-Key
+- **File Operations**: Support for file reading, writing, and editing
+- **Shell Command Execution**: Command execution with timeout control
+- **Structured Logging**: JSON format logging using slog
+- **Cloud Deployment**: Support for E2B and Docker deployment
 
-## 快速开始
+## Quick Start
 
-### 前置要求
+### Prerequisites
 
 - Go 1.24+
 - Make
-- Docker（可选，用于容器部署）
+- Docker (optional, for container deployment)
 
-### 本地开发
+### Local Development
 
 ```bash
-# 克隆仓库
+# Clone the repository
 git clone https://github.com/HJH0924/agent-sandbox.git
 cd agent-sandbox
 
-# 安装开发依赖（推荐）
+# Install development dependencies (recommended)
 make install-deps
 
-# 安装 Go 模块依赖
+# Install Go module dependencies
 go mod tidy
 
-# 构建并运行
+# Build and run
 make build
 ./bin/api-server --config configs/config.yaml
 ```
 
-服务将在 `http://localhost:8080` 启动。
+The service will start at `http://localhost:8080`.
 
-## 基本使用
+## Basic Usage
 
-### 1. 初始化沙箱
+### 1. Initialize Sandbox
 
 ```bash
 curl -X POST http://localhost:8080/core.v1.CoreService/InitSandbox \
@@ -49,7 +49,7 @@ curl -X POST http://localhost:8080/core.v1.CoreService/InitSandbox \
   -d '{}'
 ```
 
-响应示例：
+Response example:
 ```json
 {
   "sandboxId": "550e8400-e29b-41d4-a716-446655440000",
@@ -58,7 +58,7 @@ curl -X POST http://localhost:8080/core.v1.CoreService/InitSandbox \
 }
 ```
 
-### 2. 执行命令
+### 2. Execute Commands
 
 ```bash
 curl -X POST http://localhost:8080/shell.v1.ShellService/Execute \
@@ -67,9 +67,9 @@ curl -X POST http://localhost:8080/shell.v1.ShellService/Execute \
   -d '{"command": "ls -la"}'
 ```
 
-### 3. 文件操作
+### 3. File Operations
 
-**写入文件：**
+**Write File:**
 ```bash
 curl -X POST http://localhost:8080/file.v1.FileService/Write \
   -H "Content-Type: application/json" \
@@ -77,7 +77,7 @@ curl -X POST http://localhost:8080/file.v1.FileService/Write \
   -d '{"path": "example.txt", "content": "Hello, World!"}'
 ```
 
-**读取文件：**
+**Read File:**
 ```bash
 curl -X POST http://localhost:8080/file.v1.FileService/Read \
   -H "Content-Type: application/json" \
@@ -85,48 +85,48 @@ curl -X POST http://localhost:8080/file.v1.FileService/Read \
   -d '{"path": "example.txt"}'
 ```
 
-## 本地测试
+## Local Testing
 
-### 使用 Docker 模拟 E2B 环境
+### Using Docker to Simulate E2B Environment
 
-本地可以使用 Docker 来模拟 E2B sandbox 环境，用于开发和测试：
+You can use Docker locally to simulate the E2B sandbox environment for development and testing:
 
 ```bash
-# 启动 Docker 容器（使用与 E2B 相同的 Dockerfile）
+# Start Docker container (using the same Dockerfile as E2B)
 make docker
 
-# 查看日志
+# View logs
 docker-compose logs -f
 
-# 进入容器测试
+# Enter container for testing
 make shell
 ```
 
-## 生产部署
+## Production Deployment
 
-### E2B Sandbox 部署
+### E2B Sandbox Deployment
 
-**生产环境推荐使用 E2B 云端沙箱**，专为 AI Agent 设计。
+**E2B cloud sandbox is recommended for production environments**, specifically designed for AI Agents.
 
 ```bash
-# 安装 E2B CLI
+# Install E2B CLI
 npm install -g @e2b/cli
 
-# 设置 API Key（从 https://e2b.dev/dashboard 获取）
+# Set API Key (get from https://e2b.dev/dashboard)
 export E2B_API_KEY=your_api_key
 
-# 构建 E2B 模板
+# Build E2B template
 make e2b
 
-# 创建沙箱
+# Create sandbox
 e2b sandbox spawn agent-sandbox
 ```
 
-详细的 E2B 使用说明请查看[开发指南](docs/development.md#e2b-模板部署)。
+For detailed E2B usage instructions, see the [Development Guide](docs/development.md#e2b-template-deployment).
 
-## 配置
+## Configuration
 
-编辑 `configs/config.yaml`：
+Edit `configs/config.yaml`:
 
 ```yaml
 server:
@@ -138,52 +138,56 @@ server:
 sandbox:
   workspace_dir: "/tmp/agent-sandbox"
   max_file_size: 104857600  # 100MB
-  shell_timeout: 300        # 5分钟
+  shell_timeout: 300        # 5 minutes
 
 log:
   level: "info"  # debug, info, warn, error
   format: "json" # json, text
 ```
 
-## 开发
+## Development
 
-查看[开发指南](docs/development.md)了解详细的开发说明。
+See the [Development Guide](docs/development.md) for detailed development instructions.
 
-**常用命令：**
+**Common Commands:**
 
 ```bash
-make install-deps      # 安装开发依赖（包含 pre-commit hook）
-make format            # 格式化代码
-make lint              # 运行代码检查
-make build             # 构建项目
-make test              # 运行测试
-make generate          # 生成 proto 代码
-make docker            # 启动 Docker 模拟 E2B 环境（用于测试）
-make e2b               # 构建 E2B 模板（用于生产部署）
-make help              # 查看所有命令
+make install-deps      # Install development dependencies (includes pre-commit hook)
+make format            # Format code
+make lint              # Run code linting
+make build             # Build project
+make test              # Run tests
+make generate          # Generate proto code
+make docker            # Start Docker to simulate E2B environment (for testing)
+make e2b               # Build E2B template (for production deployment)
+make help              # View all commands
 ```
 
-## 项目结构
+## Project Structure
 
 ```
 agent-sandbox/
-├── cmd/server/           # 主程序入口
-├── configs/              # 配置文件
-├── docs/                 # 文档
-├── internal/             # 私有应用代码
-│   ├── config/          # 配置管理
-│   ├── domain/          # 业务域（core/file/shell）
-│   └── middleware/      # 中间件（认证、日志）
-├── proto/               # Protocol Buffer 定义
-├── scripts/             # 构建脚本和工具
-└── sdk/                 # 生成的 SDK 代码
+├── cmd/server/           # Main program entry
+├── configs/              # Configuration files
+├── docs/                 # Documentation
+├── internal/             # Private application code
+│   ├── config/          # Configuration management
+│   ├── domain/          # Business domains (core/file/shell)
+│   └── middleware/      # Middleware (authentication, logging)
+├── proto/               # Protocol Buffer definitions
+├── scripts/             # Build scripts and tools
+└── sdk/                 # Generated SDK code
 ```
 
-## 文档
+## Documentation
 
-- [开发指南](docs/development.md) - 详细的开发说明、API 开发、测试和部署
-- [API 文档](docs/api.md) - API 接口详细说明（即将推出）
+- [Development Guide](docs/development.md) - Detailed development instructions, API development, testing and deployment
+- [API Documentation](docs/api.md) - Detailed API interface documentation (coming soon)
 
-## 许可证
+## License
 
 MIT License
+
+---
+
+[中文文档](README.zh-CN.md)

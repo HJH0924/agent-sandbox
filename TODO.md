@@ -1,0 +1,12 @@
+- file
+  - upload
+  - download
+  - read
+  - write
+  - edit
+  - search (file, text, 最好方案是直接使用 ripgrep)
+- headless browser
+  - navigate
+  - screenshot
+  - click
+- shell
