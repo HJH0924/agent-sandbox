@@ -1,330 +1,55 @@
 # golangci-lint v2 configuration file
 # Documentation: https://golangci-lint.run/usage/configuration/
 
-version = 2
+version = "2"
 
 [run]
-# Timeout for analysis
 timeout = "5m"
-
-# Number of concurrent linters to run
 concurrency = 4
-
-# Go version to target for analysis
 go = "1.24"
-
-# Include test files
 tests = true
-
-# Build tags to use
 build-tags = []
-
-# Directories to skip
-skip-dirs = [
-  "vendor",
-  "testdata",
-  "examples",
-  "third_party"
-]
-
-# Files to skip
-skip-files = [
-  ".*\\.pb\\.go$",
-  ".*\\.connect\\.go$"
-]
-
-# Module download mode
 modules-download-mode = "readonly"
-
-# Allow multiple parallel golangci-lint instances
 allow-parallel-runners = false
 
 [output]
-# Output format: colored-line-number|line-number|json|tab|checkstyle|code-climate|html|junit-xml|github-actions
-format = "colored-line-number"
-
-# Print lines of code with issue
-print-issued-lines = true
-
-# Print linter name in the end of issue text
-print-linter-name = true
-
-# Make issues output unique by line
-uniq-by-line = true
-
-# Sort results by file path, line, and column
-sort-results = true
+show-stats = true
 
 [linters]
-# Enable all linters
-# enable-all = true
-
-# Disable all linters as default
-disable-all = true
-
-# Enable specific linters
 enable = [
-  # Default enabled linters
-  "errcheck",      # Check for unchecked errors
-  "govet",         # Examine suspicious constructs
-  "ineffassign",   # Detect ineffectual assignments
-  "staticcheck",   # Large set of static analysis checks
-  "unused",        # Check for unused constants, variables, functions and types
-  
-  # Additional recommended linters
-  "revive",        # Fast, configurable, extensible, flexible Go linter
-  "gosec",         # Inspect security problems
-  "misspell",      # Find commonly misspelled English words
-  "unconvert",     # Remove unnecessary type conversions
-  "unparam",       # Check for unused function parameters
-  "goconst",       # Find repeated strings that could be replaced by a constant
-  "gocyclo",       # Calculate cyclomatic complexities of functions
-  "dupl",          # Code clone detection
-  "gocritic",      # Provides diagnostics that check for bugs, performance and style issues
-  "gocognit",      # Compute cognitive complexities
-  "bodyclose",     # Check whether HTTP response body is closed successfully
-  "noctx",         # Find HTTP requests without context.Context
-  "sqlclosecheck", # Check SQL rows/statements are closed
-  "rowserrcheck",  # Check whether Rows.Err is checked
-  "nilerr",        # Find code that returns nil even if it checks that error is not nil
-  "errname",       # Check error naming conventions
-  "errorlint",     # Check error wrapping
-  "whitespace",    # Check for unnecessary whitespace
-  "wsl_v5",        # Whitespace linter
-  "dogsled",       # Check for assignments with too many blank identifiers
-  "goprintffuncname", # Check printf-like function names
-  "nakedret",      # Find naked returns in functions
-  "prealloc",      # Find slice declarations that could potentially be pre-allocated
-  "godot",         # Check if comments end with a period
+  "errcheck",
+  "govet",
+  "ineffassign",
+  "staticcheck",
+  "unused",
+  "revive",
+  "gosec",
+  "misspell",
+  "unconvert",
+  "unparam",
+  "goconst",
+  "gocyclo",
+  "dupl",
+  "gocritic",
+  "gocognit",
+  "bodyclose",
+  "noctx",
+  "sqlclosecheck",
+  "rowserrcheck",
+  "nilerr",
+  "errname",
+  "errorlint",
+  "whitespace",
+  "wsl_v5",
+  "dogsled",
+  "goprintffuncname",
+  "nakedret",
+  "prealloc",
+  "godot",
 ]
-
-[linters-settings]
-
-[linters-settings.errcheck]
-# Check type assertions
-check-type-assertions = true
-
-# Check blank assignments
-check-blank = true
-
-# List of functions to exclude from checking
-ignore = "fmt:.*,io/ioutil:^Read.*"
-
-[linters-settings.govet]
-# Enable all checks
-enable-all = true
-
-# Disable specific checks
-disable = [
-  "shadow",
-]
-
-[linters-settings.revive]
-# Ignore generated header
-ignore-generated-header = true
-
-# Confidence level
-confidence = 0.8
-
-# Rules configuration
-[[linters-settings.revive.rules]]
-name = "blank-imports"
-
-[[linters-settings.revive.rules]]
-name = "context-as-argument"
-
-[[linters-settings.revive.rules]]
-name = "context-keys-type"
-
-[[linters-settings.revive.rules]]
-name = "dot-imports"
-
-[[linters-settings.revive.rules]]
-name = "error-return"
-
-[[linters-settings.revive.rules]]
-name = "error-strings"
-
-[[linters-settings.revive.rules]]
-name = "error-naming"
-
-[[linters-settings.revive.rules]]
-name = "exported"
-
-[[linters-settings.revive.rules]]
-name = "if-return"
-
-[[linters-settings.revive.rules]]
-name = "increment-decrement"
-
-[[linters-settings.revive.rules]]
-name = "var-naming"
-
-[[linters-settings.revive.rules]]
-name = "var-declaration"
-
-[[linters-settings.revive.rules]]
-name = "package-comments"
-
-[[linters-settings.revive.rules]]
-name = "range"
-
-[[linters-settings.revive.rules]]
-name = "receiver-naming"
-
-[[linters-settings.revive.rules]]
-name = "time-naming"
-
-[[linters-settings.revive.rules]]
-name = "unexported-return"
-
-[[linters-settings.revive.rules]]
-name = "indent-error-flow"
-
-[[linters-settings.revive.rules]]
-name = "errorf"
-
-[[linters-settings.revive.rules]]
-name = "empty-block"
-
-[[linters-settings.revive.rules]]
-name = "superfluous-else"
-
-[[linters-settings.revive.rules]]
-name = "unused-parameter"
-
-[[linters-settings.revive.rules]]
-name = "unreachable-code"
-
-[[linters-settings.revive.rules]]
-name = "redefines-builtin-id"
-
-[linters-settings.gosec]
-# Rules to include
-includes = []
-
-# Rules to exclude
-excludes = []
-
-# Confidence level
-confidence = "medium"
-
-[linters-settings.misspell]
-# Locale for spell checking
-locale = "US"
-
-[linters-settings.goconst]
-# Minimal length of string constant
-min-len = 3
-
-# Minimum occurrences of constant string to trigger issue
-min-occurrences = 3
-
-# Ignore test files
-ignore-tests = true
-
-[linters-settings.gocyclo]
-# Minimal code complexity to report
-min-complexity = 15
-
-[linters-settings.dupl]
-# Tokens count to trigger issue
-threshold = 100
-
-[linters-settings.gocritic]
-# Enable multiple checks by tags
-enabled-tags = [
-  "diagnostic",
-  "experimental",
-  "opinionated",
-  "performance",
-  "style",
-]
-
-# Checks to disable
-disabled-checks = [
-  "dupImport",
-  "ifElseChain",
-  "octalLiteral",
-  "whyNoLint",
-  "wrapperFunc",
-]
-
-[linters-settings.gocognit]
-# Minimal code cognitive complexity to report
-min-complexity = 20
-
-[linters-settings.nakedret]
-# Maximum number of lines for a function to allow naked returns
-max-func-lines = 30
-
-[linters-settings.prealloc]
-# Report preallocation suggestions only on simple loops
-simple = true
-range-loops = true
-for-loops = false
-
-[linters-settings.godot]
-# Check all top-level comments, not only declarations
-scope = "declarations"
-
-# List of regexps for excluding particular comment lines from check
-exclude = []
-
-# Check that each sentence ends with a period
-period = true
-
-[linters-settings.whitespace]
-multi-if = false
-multi-func = false
-
-[linters-settings.wsl_v5]
-# Allow cuddling in the first statement in a block
-allow-first-in-block = true
-
-# Allow cuddling all statements in a block
-allow-whole-block = false
-
-# Maximum lines for branches to be considered simple
-branch-max-lines = 2
 
 [issues]
-# Exclude rules configuration
-exclude-rules = [
-  # Exclude some linters from running on tests files
-  { path = "_test\\.go", linters = ["gocyclo", "errcheck", "dupl", "gosec", "goconst", "gocognit"] },
-  
-  # Exclude generated files from all linters
-  { path = "\\.pb\\.go$", linters = ["all"] },
-  { path = "\\.connect\\.go$", linters = ["all"] },
-  
-  # Exclude some linters from main function
-  { source = "func main\\(\\)", linters = ["gocyclo", "gocognit"] },
-  
-  # Exclude specific linter messages
-  { text = "G404:", linters = ["gosec"] },  # Allow use of math/rand
-]
-
-# Files to exclude from analysis
-exclude-files = []
-
-# Directories to exclude from analysis
-exclude-dirs = [
-  "vendor",
-  "testdata",
-]
-
-# Use default exclude patterns
-exclude-use-default = false
-
-# Maximum issues count per one linter (0 means unlimited)
 max-issues-per-linter = 0
-
-# Maximum count of issues with the same text (0 means unlimited)
 max-same-issues = 0
-
-# Show only new issues
 new = false
-
-# Fix found issues (if supported by the linter)
 fix = false
