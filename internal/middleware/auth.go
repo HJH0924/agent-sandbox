@@ -1,3 +1,4 @@
+// Package middleware provides authentication and authorization interceptors.
 package middleware
 
 import (
@@ -10,23 +11,23 @@ import (
 	"connectrpc.com/connect"
 )
 
-// contextKey 自定义上下文键类型
+// contextKey 自定义上下文键类型.
 type contextKey string
 
 const (
-	// APIKeyHeader API Key 请求头
+	// APIKeyHeader API Key 请求头.
 	APIKeyHeader = "X-Sandbox-Api-Key"
-	// SandboxIDKey 上下文中的 Sandbox ID key
+	// SandboxIDKey 上下文中的 Sandbox ID key.
 	SandboxIDKey contextKey = "sandbox_id"
 )
 
-// AuthInterceptor 认证拦截器
+// AuthInterceptor 认证拦截器.
 type AuthInterceptor struct {
 	store  service.APIKeyStore
 	logger *slog.Logger
 }
 
-// NewAuthInterceptor 创建认证拦截器
+// NewAuthInterceptor 创建认证拦截器.
 func NewAuthInterceptor(store service.APIKeyStore, logger *slog.Logger) *AuthInterceptor {
 	return &AuthInterceptor{
 		store:  store,
@@ -34,7 +35,7 @@ func NewAuthInterceptor(store service.APIKeyStore, logger *slog.Logger) *AuthInt
 	}
 }
 
-// WrapUnary 拦截 Unary 调用
+// WrapUnary 拦截 Unary 调用.
 func (i *AuthInterceptor) WrapUnary(next connect.UnaryFunc) connect.UnaryFunc {
 	return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
 		// 跳过 InitSandbox 接口的认证
@@ -76,17 +77,17 @@ func (i *AuthInterceptor) WrapUnary(next connect.UnaryFunc) connect.UnaryFunc {
 	}
 }
 
-// WrapStreamingClient 拦截流式客户端调用（暂不支持）
+// WrapStreamingClient 拦截流式客户端调用（暂不支持）.
 func (i *AuthInterceptor) WrapStreamingClient(next connect.StreamingClientFunc) connect.StreamingClientFunc {
 	return next
 }
 
-// WrapStreamingHandler 拦截流式服务端调用（暂不支持）
+// WrapStreamingHandler 拦截流式服务端调用（暂不支持）.
 func (i *AuthInterceptor) WrapStreamingHandler(next connect.StreamingHandlerFunc) connect.StreamingHandlerFunc {
 	return next
 }
 
-// maskAPIKey 遮蔽 API Key，只显示前8个字符
+// maskAPIKey 遮蔽 API Key，只显示前8个字符.
 func maskAPIKey(apiKey string) string {
 	if len(apiKey) <= 8 {
 		return "***"
@@ -94,7 +95,7 @@ func maskAPIKey(apiKey string) string {
 	return apiKey[:8] + "..."
 }
 
-// GetSandboxIDFromContext 从上下文中获取 Sandbox ID
+// GetSandboxIDFromContext 从上下文中获取 Sandbox ID.
 func GetSandboxIDFromContext(ctx context.Context) (string, bool) {
 	sandboxID, ok := ctx.Value(SandboxIDKey).(string)
 	return sandboxID, ok

@@ -12,7 +12,11 @@ func TestFileService(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		if err := os.RemoveAll(tmpDir); err != nil {
+			t.Errorf("Failed to remove temp dir: %v", err)
+		}
+	}()
 
 	maxFileSize := int64(1024 * 1024) // 1MB
 	service := NewService(maxFileSize, tmpDir)
@@ -69,7 +73,11 @@ func TestFileService_ReadNonExistent(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		if err := os.RemoveAll(tmpDir); err != nil {
+			t.Errorf("Failed to remove temp dir: %v", err)
+		}
+	}()
 
 	service := NewService(1024*1024, tmpDir)
 
@@ -85,7 +93,11 @@ func TestFileService_TooLarge(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		if err := os.RemoveAll(tmpDir); err != nil {
+			t.Errorf("Failed to remove temp dir: %v", err)
+		}
+	}()
 
 	maxSize := int64(100) // Very small max size
 	service := NewService(maxSize, tmpDir)

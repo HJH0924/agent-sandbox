@@ -1,3 +1,4 @@
+// Package core provides the core functionality for sandbox initialization and management.
 package core
 
 import (
@@ -11,13 +12,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// Handler 核心服务处理器
+// Handler 核心服务处理器.
 type Handler struct {
 	coreService *service.Service
 	logger      *slog.Logger
 }
 
-// NewHandler 创建核心服务处理器
+// NewHandler 创建核心服务处理器.
 func NewHandler(coreService *service.Service, logger *slog.Logger) *Handler {
 	return &Handler{
 		coreService: coreService,
@@ -25,10 +26,10 @@ func NewHandler(coreService *service.Service, logger *slog.Logger) *Handler {
 	}
 }
 
-// InitSandbox 初始化新沙箱并返回沙箱 ID 和 API 密钥
+// InitSandbox 初始化新沙箱并返回沙箱 ID 和 API 密钥.
 func (h *Handler) InitSandbox(
 	ctx context.Context,
-	req *connect.Request[corev1.InitSandboxRequest],
+	_ *connect.Request[corev1.InitSandboxRequest],
 ) (*connect.Response[corev1.InitSandboxResponse], error) {
 	h.logger.InfoContext(ctx, "initializing sandbox")
 

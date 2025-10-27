@@ -12,7 +12,11 @@ func TestShellService_Execute(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		if err := os.RemoveAll(tmpDir); err != nil {
+			t.Errorf("Failed to remove temp dir: %v", err)
+		}
+	}()
 
 	service := NewService(30, tmpDir) // 30 seconds timeout
 
@@ -34,7 +38,11 @@ func TestShellService_WorkingDir(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		if err := os.RemoveAll(tmpDir); err != nil {
+			t.Errorf("Failed to remove temp dir: %v", err)
+		}
+	}()
 
 	service := NewService(30, tmpDir)
 
@@ -56,7 +64,11 @@ func TestShellService_FailedCommand(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		if err := os.RemoveAll(tmpDir); err != nil {
+			t.Errorf("Failed to remove temp dir: %v", err)
+		}
+	}()
 
 	service := NewService(30, tmpDir)
 
@@ -73,7 +85,11 @@ func TestShellService_Timeout(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		if err := os.RemoveAll(tmpDir); err != nil {
+			t.Errorf("Failed to remove temp dir: %v", err)
+		}
+	}()
 
 	service := NewService(1, tmpDir) // 1 second timeout
 
