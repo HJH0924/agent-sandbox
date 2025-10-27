@@ -38,8 +38,8 @@ format: ## Format code
 	goimports-reviser -imports-order=std,project,company,general  -recursive ./
 
 lint: ## Run linter
-	@which golangci-lint > /dev/null || (echo "Installing golangci-lint..." && go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest)
-	golangci-lint run -c .golangci.yml ./...
+	@which golangci-lint > /dev/null || (echo "Installing golangci-lint..." && go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest)
+	golangci-lint run -c .golangci.toml ./...
 
 build: format lint ## Build the binary
 	$(GO) build $(GOFLAGS) $(LDFLAGS) -o bin/$(BINARY_NAME) .
