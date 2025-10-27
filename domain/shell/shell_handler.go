@@ -1,3 +1,4 @@
+// Package shell provides handlers for shell command execution within the sandbox.
 package shell
 
 import (
@@ -10,13 +11,13 @@ import (
 	"connectrpc.com/connect"
 )
 
-// Handler Shell 服务处理器
+// Handler Shell 服务处理器.
 type Handler struct {
 	shellService *service.Service
 	logger       *slog.Logger
 }
 
-// NewHandler 创建 Shell 服务处理器
+// NewHandler 创建 Shell 服务处理器.
 func NewHandler(shellService *service.Service, logger *slog.Logger) *Handler {
 	return &Handler{
 		shellService: shellService,
@@ -24,7 +25,7 @@ func NewHandler(shellService *service.Service, logger *slog.Logger) *Handler {
 	}
 }
 
-// Execute 执行 Shell 命令
+// Execute 执行 Shell 命令.
 func (h *Handler) Execute(
 	ctx context.Context,
 	req *connect.Request[shellv1.ExecuteRequest],

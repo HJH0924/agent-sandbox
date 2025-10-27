@@ -1,3 +1,4 @@
+// Package config handles application configuration loading and management.
 package config
 
 import (
@@ -7,14 +8,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Config 应用配置
+// Config 应用配置.
 type Config struct {
 	Server  ServerConfig  `mapstructure:"server"`
 	Sandbox SandboxConfig `mapstructure:"sandbox"`
 	Log     LogConfig     `mapstructure:"log"`
 }
 
-// ServerConfig 服务器配置
+// ServerConfig 服务器配置.
 type ServerConfig struct {
 	Host         string        `mapstructure:"host"`
 	Port         int           `mapstructure:"port"`
@@ -22,20 +23,20 @@ type ServerConfig struct {
 	WriteTimeout time.Duration `mapstructure:"write_timeout"`
 }
 
-// SandboxConfig 沙箱配置
+// SandboxConfig 沙箱配置.
 type SandboxConfig struct {
 	WorkspaceDir string `mapstructure:"workspace_dir"`
 	MaxFileSize  int64  `mapstructure:"max_file_size"`
 	ShellTimeout int    `mapstructure:"shell_timeout"`
 }
 
-// LogConfig 日志配置
+// LogConfig 日志配置.
 type LogConfig struct {
 	Level  string `mapstructure:"level"`
 	Format string `mapstructure:"format"`
 }
 
-// Load 加载配置文件
+// Load 加载配置文件.
 func Load(configPath string) (*Config, error) {
 	viper.SetConfigFile(configPath)
 	viper.SetConfigType("yaml")
@@ -64,7 +65,7 @@ func Load(configPath string) (*Config, error) {
 	return &config, nil
 }
 
-// Address 返回服务器监听地址
+// Address 返回服务器监听地址.
 func (c *ServerConfig) Address() string {
 	return fmt.Sprintf("%s:%d", c.Host, c.Port)
 }

@@ -1,3 +1,4 @@
+// Package service implements shell command execution functionality.
 package service
 
 import (
@@ -9,13 +10,13 @@ import (
 	"time"
 )
 
-// Service Shell 服务
+// Service Shell 服务.
 type Service struct {
 	defaultTimeout time.Duration
 	workspaceDir   string
 }
 
-// NewService 创建 Shell 服务实例
+// NewService 创建 Shell 服务实例.
 func NewService(defaultTimeout int, workspaceDir string) *Service {
 	return &Service{
 		defaultTimeout: time.Duration(defaultTimeout) * time.Second,
@@ -23,12 +24,12 @@ func NewService(defaultTimeout int, workspaceDir string) *Service {
 	}
 }
 
-// ExecuteResult 执行结果
+// ExecuteResult 执行结果.
 type ExecuteResult struct {
 	Output string
 }
 
-// Execute 执行 Shell 命令
+// Execute 执行 Shell 命令.
 func (s *Service) Execute(ctx context.Context, command string) (*ExecuteResult, error) {
 	// 创建带超时的 context
 	ctx, cancel := context.WithTimeout(ctx, s.defaultTimeout)
@@ -44,11 +45,13 @@ func (s *Service) Execute(ctx context.Context, command string) (*ExecuteResult, 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get absolute path: %w", err)
 		}
+
 		cmd.Dir = absPath
 	}
 
 	// 捕获输出
 	var stdout, stderr bytes.Buffer
+
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
@@ -61,6 +64,7 @@ func (s *Service) Execute(ctx context.Context, command string) (*ExecuteResult, 
 		if len(output) > 0 {
 			output += "\n"
 		}
+
 		output += stderr.String()
 	}
 
@@ -69,6 +73,7 @@ func (s *Service) Execute(ctx context.Context, command string) (*ExecuteResult, 
 		if output != "" {
 			return &ExecuteResult{Output: output}, fmt.Errorf("command execution failed: %w", err)
 		}
+
 		return nil, fmt.Errorf("command execution failed: %w", err)
 	}
 

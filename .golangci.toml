@@ -1,0 +1,55 @@
+# golangci-lint v2 configuration file
+# Documentation: https://golangci-lint.run/usage/configuration/
+
+version = "2"
+
+[run]
+timeout = "5m"
+concurrency = 4
+go = "1.24"
+tests = true
+build-tags = []
+modules-download-mode = "readonly"
+allow-parallel-runners = false
+
+[output]
+show-stats = true
+
+[linters]
+enable = [
+  "errcheck",
+  "govet",
+  "ineffassign",
+  "staticcheck",
+  "unused",
+  "revive",
+  "gosec",
+  "misspell",
+  "unconvert",
+  "unparam",
+  "goconst",
+  "gocyclo",
+  "dupl",
+  "gocritic",
+  "gocognit",
+  "bodyclose",
+  "noctx",
+  "sqlclosecheck",
+  "rowserrcheck",
+  "nilerr",
+  "errname",
+  "errorlint",
+  "whitespace",
+  "wsl_v5",
+  "dogsled",
+  "goprintffuncname",
+  "nakedret",
+  "prealloc",
+  "godot",
+]
+
+[issues]
+max-issues-per-linter = 0
+max-same-issues = 0
+new = false
+fix = false

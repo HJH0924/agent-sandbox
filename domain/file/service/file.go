@@ -1,3 +1,4 @@
+// Package service implements file management operations for the sandbox.
 package service
 
 import (
@@ -6,13 +7,13 @@ import (
 	"path/filepath"
 )
 
-// Service 文件服务
+// Service 文件服务.
 type Service struct {
 	maxFileSize  int64
 	workspaceDir string
 }
 
-// NewService 创建文件服务实例
+// NewService 创建文件服务实例.
 func NewService(maxFileSize int64, workspaceDir string) *Service {
 	return &Service{
 		maxFileSize:  maxFileSize,
@@ -20,12 +21,12 @@ func NewService(maxFileSize int64, workspaceDir string) *Service {
 	}
 }
 
-// ReadResult 读取结果
+// ReadResult 读取结果.
 type ReadResult struct {
 	Content string
 }
 
-// Read 读取文件
+// Read 读取文件.
 func (s *Service) Read(path string) (*ReadResult, error) {
 	// 确保路径在工作目录下
 	fullPath := filepath.Join(s.workspaceDir, path)
@@ -36,6 +37,7 @@ func (s *Service) Read(path string) (*ReadResult, error) {
 		if os.IsNotExist(err) {
 			return nil, fmt.Errorf("file not found: %s", path)
 		}
+
 		return nil, fmt.Errorf("failed to stat file: %w", err)
 	}
 
@@ -45,7 +47,7 @@ func (s *Service) Read(path string) (*ReadResult, error) {
 	}
 
 	// 读取文件
-	content, err := os.ReadFile(fullPath)
+	content, err := os.ReadFile(fullPath) // #nosec G304 -- fullPath is constructed from validated workspace directory
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file: %w", err)
 	}
@@ -55,7 +57,7 @@ func (s *Service) Read(path string) (*ReadResult, error) {
 	}, nil
 }
 
-// Write 写入文件
+// Write 写入文件.
 func (s *Service) Write(path, content string) error {
 	// 确保路径在工作目录下
 	fullPath := filepath.Join(s.workspaceDir, path)
@@ -68,25 +70,25 @@ func (s *Service) Write(path, content string) error {
 
 	// 创建目录
 	dir := filepath.Dir(fullPath)
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, 0o750); err != nil {
 		return fmt.Errorf("failed to create directories: %w", err)
 	}
 
 	// 写入文件
-	if err := os.WriteFile(fullPath, []byte(content), 0o644); err != nil {
+	if err := os.WriteFile(fullPath, []byte(content), 0o600); err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
 
 	return nil
 }
 
-// EditResult 编辑结果
+// EditResult 编辑结果.
 type EditResult struct {
 	Path    string
 	Content string
 }
 
-// Edit 编辑文件（直接覆盖内容）
+// Edit 编辑文件（直接覆盖内容）.
 func (s *Service) Edit(path, content string) (*EditResult, error) {
 	// 确保路径在工作目录下
 	fullPath := filepath.Join(s.workspaceDir, path)
@@ -102,11 +104,12 @@ func (s *Service) Edit(path, content string) (*EditResult, error) {
 		if os.IsNotExist(err) {
 			return nil, fmt.Errorf("file not found: %s", path)
 		}
+
 		return nil, fmt.Errorf("failed to stat file: %w", err)
 	}
 
 	// 写入文件
-	if err := os.WriteFile(fullPath, []byte(content), 0o644); err != nil {
+	if err := os.WriteFile(fullPath, []byte(content), 0o600); err != nil {
 		return nil, fmt.Errorf("failed to write file: %w", err)
 	}
 

@@ -1,3 +1,4 @@
+// Package file provides handlers for file operations within the sandbox.
 package file
 
 import (
@@ -10,13 +11,13 @@ import (
 	"connectrpc.com/connect"
 )
 
-// Handler 文件服务处理器
+// Handler 文件服务处理器.
 type Handler struct {
 	fileService *service.Service
 	logger      *slog.Logger
 }
 
-// NewHandler 创建文件服务处理器
+// NewHandler 创建文件服务处理器.
 func NewHandler(fileService *service.Service, logger *slog.Logger) *Handler {
 	return &Handler{
 		fileService: fileService,
@@ -24,7 +25,7 @@ func NewHandler(fileService *service.Service, logger *slog.Logger) *Handler {
 	}
 }
 
-// Read 读取文件
+// Read 读取文件.
 func (h *Handler) Read(
 	ctx context.Context,
 	req *connect.Request[filev1.ReadRequest],
@@ -40,6 +41,7 @@ func (h *Handler) Read(
 		h.logger.ErrorContext(ctx, "failed to read file",
 			slog.String("path", path),
 			slog.Any("error", err))
+
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
@@ -53,7 +55,7 @@ func (h *Handler) Read(
 	}), nil
 }
 
-// Write 写入文件
+// Write 写入文件.
 func (h *Handler) Write(
 	ctx context.Context,
 	req *connect.Request[filev1.WriteRequest],
@@ -70,6 +72,7 @@ func (h *Handler) Write(
 		h.logger.ErrorContext(ctx, "failed to write file",
 			slog.String("path", path),
 			slog.Any("error", err))
+
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
@@ -80,7 +83,7 @@ func (h *Handler) Write(
 	return connect.NewResponse(&filev1.WriteResponse{}), nil
 }
 
-// Edit 编辑文件
+// Edit 编辑文件.
 func (h *Handler) Edit(
 	ctx context.Context,
 	req *connect.Request[filev1.EditRequest],
@@ -98,6 +101,7 @@ func (h *Handler) Edit(
 		h.logger.ErrorContext(ctx, "failed to edit file",
 			slog.String("path", path),
 			slog.Any("error", err))
+
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
