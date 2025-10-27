@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/HJH0924/agent-sandbox/internal/domain/core/service"
+	"github.com/HJH0924/agent-sandbox/domain/core/service"
 
 	"connectrpc.com/connect"
 )

@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/HJH0924/agent-sandbox/internal/domain/file/service"
+	"github.com/HJH0924/agent-sandbox/domain/file/service"
 	filev1 "github.com/HJH0924/agent-sandbox/sdk/go/file/v1"
 
 	"connectrpc.com/connect"
