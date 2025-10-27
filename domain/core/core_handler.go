@@ -38,6 +38,7 @@ func (h *Handler) InitSandbox(
 	if err != nil {
 		h.logger.ErrorContext(ctx, "failed to initialize sandbox",
 			slog.Any("error", err))
+
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 

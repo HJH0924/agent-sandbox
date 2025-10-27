@@ -53,7 +53,7 @@ func main() {
 	}
 }
 
-func run(_ *cobra.Command, args []string) {
+func run(_ *cobra.Command, _ []string) {
 	// 加载配置
 	cfg, err := config.Load(configFile)
 	if err != nil {
@@ -70,7 +70,7 @@ func run(_ *cobra.Command, args []string) {
 		slog.String("config", configFile))
 
 	// 确保工作目录存在
-	if err := os.MkdirAll(cfg.Sandbox.WorkspaceDir, 0o755); err != nil {
+	if err := os.MkdirAll(cfg.Sandbox.WorkspaceDir, 0o750); err != nil {
 		logger.Error("failed to create workspace directory",
 			slog.String("dir", cfg.Sandbox.WorkspaceDir),
 			slog.Any("error", err))
@@ -117,6 +117,7 @@ func run(_ *cobra.Command, args []string) {
 	// 健康检查
 	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
+
 		if _, err := w.Write([]byte("OK")); err != nil {
 			logger.Error("failed to write health check response", slog.Any("error", err))
 		}
@@ -134,6 +135,7 @@ func run(_ *cobra.Command, args []string) {
 	go func() {
 		logger.Info("server listening",
 			slog.String("address", cfg.Server.Address()))
+
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Error("server error", slog.Any("error", err))
 			os.Exit(1)

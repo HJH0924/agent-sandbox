@@ -16,7 +16,7 @@ type contextKey string
 
 const (
 	// APIKeyHeader API Key 请求头.
-	APIKeyHeader = "X-Sandbox-Api-Key"
+	APIKeyHeader = "X-Sandbox-Api-Key" // #nosec G101 -- This is a header name, not a credential
 	// SandboxIDKey 上下文中的 Sandbox ID key.
 	SandboxIDKey contextKey = "sandbox_id"
 )
@@ -48,6 +48,7 @@ func (i *AuthInterceptor) WrapUnary(next connect.UnaryFunc) connect.UnaryFunc {
 		if apiKey == "" {
 			i.logger.WarnContext(ctx, "missing api key",
 				slog.String("procedure", req.Spec().Procedure))
+
 			return nil, connect.NewError(
 				connect.CodeUnauthenticated,
 				connect.NewError(connect.CodeUnauthenticated, nil),
@@ -60,6 +61,7 @@ func (i *AuthInterceptor) WrapUnary(next connect.UnaryFunc) connect.UnaryFunc {
 			i.logger.WarnContext(ctx, "invalid api key",
 				slog.String("procedure", req.Spec().Procedure),
 				slog.String("api_key_prefix", maskAPIKey(apiKey)))
+
 			return nil, connect.NewError(
 				connect.CodeUnauthenticated,
 				connect.NewError(connect.CodeUnauthenticated, nil),
@@ -92,6 +94,7 @@ func maskAPIKey(apiKey string) string {
 	if len(apiKey) <= 8 {
 		return "***"
 	}
+
 	return apiKey[:8] + "..."
 }
 

@@ -12,6 +12,7 @@ func TestShellService_Execute(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
+
 	defer func() {
 		if err := os.RemoveAll(tmpDir); err != nil {
 			t.Errorf("Failed to remove temp dir: %v", err)
@@ -22,6 +23,7 @@ func TestShellService_Execute(t *testing.T) {
 
 	// Test simple command
 	ctx := context.Background()
+
 	result, err := service.Execute(ctx, "echo 'Hello, World!'")
 	if err != nil {
 		t.Fatalf("Failed to execute command: %v", err)
@@ -38,6 +40,7 @@ func TestShellService_WorkingDir(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
+
 	defer func() {
 		if err := os.RemoveAll(tmpDir); err != nil {
 			t.Errorf("Failed to remove temp dir: %v", err)
@@ -48,6 +51,7 @@ func TestShellService_WorkingDir(t *testing.T) {
 
 	// Execute pwd command to check working directory
 	ctx := context.Background()
+
 	result, err := service.Execute(ctx, "pwd")
 	if err != nil {
 		t.Fatalf("Failed to execute command: %v", err)
@@ -64,6 +68,7 @@ func TestShellService_FailedCommand(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
+
 	defer func() {
 		if err := os.RemoveAll(tmpDir); err != nil {
 			t.Errorf("Failed to remove temp dir: %v", err)
@@ -74,6 +79,7 @@ func TestShellService_FailedCommand(t *testing.T) {
 
 	// Execute a command that will fail
 	ctx := context.Background()
+
 	_, err = service.Execute(ctx, "exit 1")
 	if err == nil {
 		t.Fatal("Expected error for failed command")
@@ -85,6 +91,7 @@ func TestShellService_Timeout(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
+
 	defer func() {
 		if err := os.RemoveAll(tmpDir); err != nil {
 			t.Errorf("Failed to remove temp dir: %v", err)
@@ -95,6 +102,7 @@ func TestShellService_Timeout(t *testing.T) {
 
 	// Execute a command that takes longer than timeout
 	ctx := context.Background()
+
 	_, err = service.Execute(ctx, "sleep 5")
 	if err == nil {
 		t.Fatal("Expected timeout error")

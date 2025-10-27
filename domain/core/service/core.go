@@ -56,6 +56,7 @@ func (s *MemoryAPIKeyStore) Verify(apiKey string) (string, bool) {
 	defer s.mu.RUnlock()
 
 	sandboxID, ok := s.keys[apiKey]
+
 	return sandboxID, ok
 }
 
@@ -102,6 +103,7 @@ func (s *Service) InitSandbox() (*InitSandboxResult, error) {
 	if _, err := rand.Read(apiKeyBytes); err != nil {
 		return nil, fmt.Errorf("failed to generate api key: %w", err)
 	}
+
 	apiKey := "sk_" + hex.EncodeToString(apiKeyBytes)
 
 	// 存储 API 密钥

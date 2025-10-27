@@ -12,6 +12,7 @@ func TestFileService(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
+
 	defer func() {
 		if err := os.RemoveAll(tmpDir); err != nil {
 			t.Errorf("Failed to remove temp dir: %v", err)
@@ -48,6 +49,7 @@ func TestFileService(t *testing.T) {
 
 	// Test Edit
 	newContent := "Hello, Updated World!"
+
 	editResult, err := service.Edit(testPath, newContent)
 	if err != nil {
 		t.Fatalf("Failed to edit file: %v", err)
@@ -73,6 +75,7 @@ func TestFileService_ReadNonExistent(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
+
 	defer func() {
 		if err := os.RemoveAll(tmpDir); err != nil {
 			t.Errorf("Failed to remove temp dir: %v", err)
@@ -93,6 +96,7 @@ func TestFileService_TooLarge(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
+
 	defer func() {
 		if err := os.RemoveAll(tmpDir); err != nil {
 			t.Errorf("Failed to remove temp dir: %v", err)
@@ -104,6 +108,7 @@ func TestFileService_TooLarge(t *testing.T) {
 
 	// Try to write content larger than max size
 	largeContent := string(make([]byte, 200))
+
 	err = service.Write("large.txt", largeContent)
 	if err == nil {
 		t.Fatal("Expected error when writing content larger than max size")

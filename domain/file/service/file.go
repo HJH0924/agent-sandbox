@@ -37,6 +37,7 @@ func (s *Service) Read(path string) (*ReadResult, error) {
 		if os.IsNotExist(err) {
 			return nil, fmt.Errorf("file not found: %s", path)
 		}
+
 		return nil, fmt.Errorf("failed to stat file: %w", err)
 	}
 
@@ -46,7 +47,7 @@ func (s *Service) Read(path string) (*ReadResult, error) {
 	}
 
 	// 读取文件
-	content, err := os.ReadFile(fullPath)
+	content, err := os.ReadFile(fullPath) // #nosec G304 -- fullPath is constructed from validated workspace directory
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file: %w", err)
 	}
@@ -69,12 +70,12 @@ func (s *Service) Write(path, content string) error {
 
 	// 创建目录
 	dir := filepath.Dir(fullPath)
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, 0o750); err != nil {
 		return fmt.Errorf("failed to create directories: %w", err)
 	}
 
 	// 写入文件
-	if err := os.WriteFile(fullPath, []byte(content), 0o644); err != nil {
+	if err := os.WriteFile(fullPath, []byte(content), 0o600); err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
 
@@ -103,11 +104,12 @@ func (s *Service) Edit(path, content string) (*EditResult, error) {
 		if os.IsNotExist(err) {
 			return nil, fmt.Errorf("file not found: %s", path)
 		}
+
 		return nil, fmt.Errorf("failed to stat file: %w", err)
 	}
 
 	// 写入文件
-	if err := os.WriteFile(fullPath, []byte(content), 0o644); err != nil {
+	if err := os.WriteFile(fullPath, []byte(content), 0o600); err != nil {
 		return nil, fmt.Errorf("failed to write file: %w", err)
 	}
 

@@ -41,6 +41,7 @@ func (h *Handler) Read(
 		h.logger.ErrorContext(ctx, "failed to read file",
 			slog.String("path", path),
 			slog.Any("error", err))
+
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
@@ -71,6 +72,7 @@ func (h *Handler) Write(
 		h.logger.ErrorContext(ctx, "failed to write file",
 			slog.String("path", path),
 			slog.Any("error", err))
+
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
@@ -99,6 +101,7 @@ func (h *Handler) Edit(
 		h.logger.ErrorContext(ctx, "failed to edit file",
 			slog.String("path", path),
 			slog.Any("error", err))
+
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 

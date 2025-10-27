@@ -45,11 +45,13 @@ func (s *Service) Execute(ctx context.Context, command string) (*ExecuteResult, 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get absolute path: %w", err)
 		}
+
 		cmd.Dir = absPath
 	}
 
 	// 捕获输出
 	var stdout, stderr bytes.Buffer
+
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
@@ -62,6 +64,7 @@ func (s *Service) Execute(ctx context.Context, command string) (*ExecuteResult, 
 		if len(output) > 0 {
 			output += "\n"
 		}
+
 		output += stderr.String()
 	}
 
@@ -70,6 +73,7 @@ func (s *Service) Execute(ctx context.Context, command string) (*ExecuteResult, 
 		if output != "" {
 			return &ExecuteResult{Output: output}, fmt.Errorf("command execution failed: %w", err)
 		}
+
 		return nil, fmt.Errorf("command execution failed: %w", err)
 	}
 
