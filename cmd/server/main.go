@@ -18,12 +18,8 @@ import (
 	"github.com/HJH0924/agent-sandbox/domain/shell"
 	shellService "github.com/HJH0924/agent-sandbox/domain/shell/service"
 	"github.com/HJH0924/agent-sandbox/internal/config"
-	"github.com/HJH0924/agent-sandbox/internal/middleware"
-	corev1connect "github.com/HJH0924/agent-sandbox/sdk/go/core/v1/corev1connect"
-	filev1connect "github.com/HJH0924/agent-sandbox/sdk/go/file/v1/filev1connect"
-	shellv1connect "github.com/HJH0924/agent-sandbox/sdk/go/shell/v1/shellv1connect"
+	"github.com/HJH0924/agent-sandbox/internal/router"
 
-	"connectrpc.com/connect"
 	"github.com/spf13/cobra"
 )
 
@@ -90,43 +86,19 @@ func run(_ *cobra.Command, _ []string) {
 	fileHandler := file.NewHandler(fileSvc, logger)
 	shellHandler := shell.NewHandler(shellSvc, logger)
 
-	// 创建认证拦截器
-	authInterceptor := middleware.NewAuthInterceptor(apiKeyStore, logger)
-
-	// 创建 HTTP 服务器
-	mux := http.NewServeMux()
-
-	// 注册 CoreService（不需要认证的接口）
-	corePath, coreHTTPHandler := corev1connect.NewCoreServiceHandler(coreHandler)
-	mux.Handle(corePath, coreHTTPHandler)
-
-	// 注册 FileService（需要认证）
-	filePath, fileHandlerWithAuth := filev1connect.NewFileServiceHandler(
-		fileHandler,
-		connect.WithInterceptors(authInterceptor),
-	)
-	mux.Handle(filePath, fileHandlerWithAuth)
-
-	// 注册 ShellService（需要认证）
-	shellPath, shellHandlerWithAuth := shellv1connect.NewShellServiceHandler(
-		shellHandler,
-		connect.WithInterceptors(authInterceptor),
-	)
-	mux.Handle(shellPath, shellHandlerWithAuth)
-
-	// 健康检查
-	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		if _, err := w.Write([]byte("OK")); err != nil {
-			logger.Error("failed to write health check response", slog.Any("error", err))
-		}
+	// 设置路由
+	handler := router.Setup(&router.Config{
+		CoreHandler:  coreHandler,
+		FileHandler:  fileHandler,
+		ShellHandler: shellHandler,
+		APIKeyStore:  apiKeyStore,
+		Logger:       logger,
 	})
 
 	// 创建 HTTP 服务器
 	server := &http.Server{
 		Addr:         cfg.Server.Address(),
-		Handler:      mux,
+		Handler:      handler,
 		ReadTimeout:  cfg.Server.ReadTimeout,
 		WriteTimeout: cfg.Server.WriteTimeout,
 	}
@@ -161,24 +133,22 @@ func run(_ *cobra.Command, _ []string) {
 }
 
 func initLogger(cfg config.LogConfig) *slog.Logger {
-	var level slog.Level
-	switch cfg.Level {
-	case "debug":
-		level = slog.LevelDebug
-	case "info":
-		level = slog.LevelInfo
-	case "warn":
-		level = slog.LevelWarn
-	case "error":
-		level = slog.LevelError
-	default:
+	// 解析日志级别
+	levelMap := map[string]slog.Level{
+		"debug": slog.LevelDebug,
+		"info":  slog.LevelInfo,
+		"warn":  slog.LevelWarn,
+		"error": slog.LevelError,
+	}
+	
+	level, ok := levelMap[cfg.Level]
+	if !ok {
 		level = slog.LevelInfo
 	}
 
-	opts := &slog.HandlerOptions{
-		Level: level,
-	}
+	opts := &slog.HandlerOptions{Level: level}
 
+	// 根据格式创建 handler
 	var handler slog.Handler
 	if cfg.Format == "json" {
 		handler = slog.NewJSONHandler(os.Stdout, opts)

@@ -36,12 +36,8 @@ type LogConfig struct {
 	Format string `mapstructure:"format"`
 }
 
-// Load 加载配置文件.
-func Load(configPath string) (*Config, error) {
-	viper.SetConfigFile(configPath)
-	viper.SetConfigType("yaml")
-
-	// 设置默认值
+// setDefaults 设置配置的默认值.
+func setDefaults() {
 	viper.SetDefault("server.host", "0.0.0.0")
 	viper.SetDefault("server.port", 8080)
 	viper.SetDefault("server.read_timeout", "30s")
@@ -51,6 +47,15 @@ func Load(configPath string) (*Config, error) {
 	viper.SetDefault("sandbox.shell_timeout", 300)
 	viper.SetDefault("log.level", "info")
 	viper.SetDefault("log.format", "json")
+}
+
+// Load 加载配置文件.
+func Load(configPath string) (*Config, error) {
+	viper.SetConfigFile(configPath)
+	viper.SetConfigType("yaml")
+
+	// 设置默认值
+	setDefaults()
 
 	// 读取配置文件
 	if err := viper.ReadInConfig(); err != nil {
