@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  base: '/agent-sandbox/',
   title: "Agent Sandbox Service",
   description: "一个为 AI Agent 设计的安全沙箱服务，提供隔离的文件操作和命令执行环境。基于 Go 和 gRPC/Connect-RPC 构建。",
   themeConfig: {
