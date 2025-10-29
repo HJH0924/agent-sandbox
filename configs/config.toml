@@ -1,0 +1,14 @@
+[server]
+host = "0.0.0.0"
+port = 8080
+read_timeout = "30s"
+write_timeout = "30s"
+
+[sandbox]
+workspace_dir = "/tmp/manus-sandbox"
+max_file_size = 104857600  # 100MB
+shell_timeout = 300  # 5 minutes
+
+[log]
+level = "info"  # debug, info, warn, error
+format = "json"  # json, text

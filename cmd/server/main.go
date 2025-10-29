@@ -140,7 +140,7 @@ func initLogger(cfg config.LogConfig) *slog.Logger {
 		"warn":  slog.LevelWarn,
 		"error": slog.LevelError,
 	}
-	
+
 	level, ok := levelMap[cfg.Level]
 	if !ok {
 		level = slog.LevelInfo

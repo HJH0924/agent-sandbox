@@ -42,10 +42,10 @@ lint: ## Run linter
 	golangci-lint run -c .golangci.toml ./...
 
 build: format lint ## Build the binary
-	$(GO) build $(GOFLAGS) $(LDFLAGS) -o bin/$(BINARY_NAME) .
+	$(GO) build $(GOFLAGS) $(LDFLAGS) -o bin/$(BINARY_NAME) ./cmd/server/
 
 build-linux: format lint ## Build the binary for Linux
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build $(GOFLAGS) $(LDFLAGS) -o bin/$(BINARY_NAME) .
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build $(GOFLAGS) $(LDFLAGS) -o bin/$(BINARY_NAME) ./cmd/server/
 
 run: format lint ## Run the server
 	$(GO) run cmd/server/main.go -c configs/config.yaml

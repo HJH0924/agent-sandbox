@@ -52,7 +52,7 @@ func setDefaults() {
 // Load 加载配置文件.
 func Load(configPath string) (*Config, error) {
 	viper.SetConfigFile(configPath)
-	viper.SetConfigType("yaml")
+	viper.SetConfigType("toml")
 
 	// 设置默认值
 	setDefaults()
