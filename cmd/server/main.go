@@ -39,7 +39,7 @@ var (
 )
 
 func init() {
-	rootCmd.Flags().StringVarP(&configFile, "config", "c", "configs/config.yaml", "config file path")
+	rootCmd.Flags().StringVarP(&configFile, "config", "c", "configs/config.toml", "config file path")
 }
 
 func main() {
